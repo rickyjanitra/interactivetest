@@ -271,7 +271,7 @@ cropFromGuide();
 
 
 const transparentImage =
-await removeBackground(
+await removeBackgroundMediaPipe(
     guideCanvas
 );
 
@@ -791,6 +791,105 @@ function edgeCleanup(imageURL){
 
 
         img.src = imageURL;
+
+    });
+
+}
+
+async function removeBackgroundMediaPipe(canvas){
+
+    return new Promise((resolve)=>{
+
+
+        const selfieSegmentation =
+        new SelfieSegmentation({
+
+            locateFile:(file)=>{
+
+                return `https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/${file}`;
+
+            }
+
+        });
+
+
+
+        selfieSegmentation.setOptions({
+
+            modelSelection:1
+
+        });
+
+
+
+        selfieSegmentation.onResults((results)=>{
+
+
+            const out =
+            document.createElement("canvas");
+
+
+            out.width = canvas.width;
+            out.height = canvas.height;
+
+
+            const ctx =
+            out.getContext("2d");
+
+
+            // gambar mask
+
+            ctx.drawImage(
+
+                results.segmentationMask,
+
+                0,
+
+                0,
+
+                out.width,
+
+                out.height
+
+            );
+
+
+            // ambil hanya orang
+
+            ctx.globalCompositeOperation =
+            "source-in";
+
+
+            ctx.drawImage(
+
+                canvas,
+
+                0,
+
+                0,
+
+                out.width,
+
+                out.height
+
+            );
+
+
+            resolve(
+                out.toDataURL("image/png")
+            );
+
+
+        });
+
+
+
+        selfieSegmentation.send({
+
+            image:canvas
+
+        });
+
 
     });
 
