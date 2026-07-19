@@ -110,8 +110,8 @@ faceH / guideSize;
 
 
 const sizeOK =
-sizeRatio > 0.65 &&
-sizeRatio < 1.05;
+sizeRatio > 0.55 &&
+sizeRatio < 1.15;
 
 
 
@@ -134,14 +134,10 @@ sizeRatio < 1.05;
 
     const inside =
 
-        faceLeft > guideRect.left &&
-
-        faceRight < guideRect.right &&
-
-        faceTop > guideRect.top &&
-
-        faceBottom < guideRect.bottom
-        &&
+        faceLeft > guideRect.left - 20 &&
+faceRight < guideRect.right + 20 &&
+faceTop > guideRect.top - 20 &&
+faceBottom < guideRect.bottom + 20
         sizeOK;
 
 
