@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Selfie Crop AI</title>
+
+    <link rel="stylesheet"
+          href="style.css">
+
+</head>
+
+
+<body>
+
+
+<div id="app">
+
+
+<!-- ===================================
+     CAMERA
+=================================== -->
+
+
+<video id="camera"
+       autoplay
+       playsinline></video>
+
+
+
+
+
+<!-- ===================================
+     FACE GUIDE
+=================================== -->
+
+
+<div id="guideOverlay">
+
+    <!-- ===================================
+     MESSAGE INPUT
+=================================== -->
+
+<div id="messageArea">
+
+
+    <textarea
+        id="messageInput"
+        maxlength="40"
+        placeholder="Tulis keresahanmu..."></textarea>
+
+
+    <div id="charCount">
+
+        0 / 40
+
+    </div>
+
+    <div id="previewButtons">
+
+
+        <button id="retakeBtn"
+                type="button">
+
+            Retake
+
+        </button>
+
+
+
+        <button id="uploadBtn"
+                type="button">
+
+            Upload
+
+        </button>
+
+
+    </div>
+
+
+</div>
+
+
+    <div id="faceGuide"></div>
+
+
+    <div id="countdown"></div>
+
+
+   <div id="guideText">
+
+    <span id="closerText">
+        Closer<br>
+    Align your face
+    </span>
+
+
+</div>
+
+
+
+
+
+<!-- ===================================
+     WORK CANVAS
+=================================== -->
+
+
+<canvas id="photo"></canvas>
+
+
+
+
+
+<!-- ===================================
+     RESULT CANVAS
+=================================== -->
+
+
+<canvas id="resultCanvas"
+        class="hidden"></canvas>
+
+
+
+
+
+<!-- ===================================
+     CAPTURE BUTTON
+=================================== -->
+
+
+<button id="captureBtn"
+        type="button">
+
+    Capture
+
+</button>
+
+
+
+
+
+<!-- ===================================
+     PROCESSING
+=================================== -->
+
+
+<div id="processingOverlay"
+     class="hidden">
+
+
+    <div class="loader"></div>
+
+
+    <p id="processingText">
+
+        Removing background...
+
+    </p>
+
+
+</div>
+
+<div id="bottomPanel"></div>
+
+
+
+<!-- ===================================
+     MESSAGE
+=================================== -->
+
+
+<div id="messageBox"
+     class="hidden">
+
+
+    <div id="messageIcon">
+
+        ✓
+
+    </div>
+
+
+    <div id="messageText">
+
+        Done!
+
+    </div>
+
+
+</div>
+
+
+<!-- ===================================
+     PREVIEW
+=================================== -->
+
+
+<div id="previewScreen"
+     class="hidden">
+
+
+    <img id="previewImage"
+         alt="Preview"
+         draggable="false">
+
+
+
+   
+
+
+
+
+    
+
+
+
+</div>
+
+
+
+</div> <!-- END APP -->
+
+
+
+
+
+<!-- ===================================
+     MEDIAPIPE FACE DETECTION
+=================================== -->
+
+
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_detection/face_detection.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/selfie_segmentation.js"></script>
+
+
+
+
+
+<!-- ===================================
+     IMG.LY AI BACKGROUND REMOVAL
+=================================== -->
+
+
+<script type="module">
+
+import { removeBackground } from 
+"https://cdn.jsdelivr.net/npm/@imgly/background-removal/+esm";
+
+
+window.imglyRemoveBackground =
+removeBackground;
+
+
+console.log(
+    "IMG.LY READY:",
+    typeof window.imglyRemoveBackground
+);
+
+
+</script>
+
+
+
+
+
+<!-- ===================================
+     PROJECT FILES
+=================================== -->
+
+
+<script src="crop.js"></script>
+
+<script src="faceDetection.js"></script>
+
+<script src="faceMesh.js"></script>
+
+<script src="headCrop.js"></script>
+
+<script src="headMask.js"></script>
+
+<script src="segmentation.js"></script>
+
+<script src="script.js"></script>
+
+
+
+</body>
+
+</html>

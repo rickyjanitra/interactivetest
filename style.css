@@ -1,0 +1,737 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+
+body{
+
+    background:#000;
+    overflow:hidden;
+
+    font-family:Arial, Helvetica, sans-serif;
+
+}
+
+
+#app{
+
+    position:relative;
+
+    width:100vw;
+    height:100vh;
+
+    overflow:hidden;
+
+}
+
+
+/* ==========================================
+   CAMERA
+========================================== */
+
+
+#camera{
+
+    position:absolute;
+
+    inset:0;
+
+    width:100%;
+    height:100%;
+
+    object-fit:cover;
+
+    z-index:1;
+
+}
+
+
+
+/* ==========================================
+   FACE GUIDE
+========================================== */
+
+
+#guideOverlay{
+
+    position:absolute;
+
+    inset:0;
+
+
+    display:flex;
+
+    flex-direction:column;
+
+
+    justify-content:center;
+
+    align-items:center;
+
+
+    /*
+    sedikit naik supaya
+    kepala center,
+    leher tidak masuk crop
+    */
+
+    transform:translateY(-20%);
+
+
+    pointer-events:none;
+
+    z-index:50;
+
+}
+
+
+
+
+#faceGuide{
+
+
+    /*
+    ukuran guide utama
+    */
+
+    width:min(70vw,70vh);
+
+
+    max-width:520px;
+
+
+    aspect-ratio:0.60;
+
+
+
+     border:4px dotted rgba(255,255,255,.95);
+
+
+    border-radius:50%;
+
+
+
+    box-shadow:
+
+        0 0 35px rgba(255,255,255,.18);
+
+
+
+    transition:.3s;
+
+
+}
+
+
+
+
+
+#faceGuide.ready{
+
+
+    border-color:#00ff88;
+
+
+    box-shadow:
+
+        0 0 45px rgba(0,255,136,.55);
+
+
+}
+
+
+
+
+
+#guideText{
+
+    position:absolute;
+
+    top:50%;
+
+    transform:translateY(-50%);
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    color:white;
+
+    text-shadow:
+    0 3px 10px rgba(0,0,0,.6);
+
+}
+
+
+#closerText{
+
+    font-size:22px;
+
+    font-weight:700;
+
+}
+
+
+#alignText{
+
+    display:block;
+
+    color:white;
+
+    font-size:14px;
+
+    margin-top:8px;
+
+}
+
+
+
+
+/* ==========================================
+   WORK CANVAS
+========================================== */
+
+
+#photo{
+
+    display:none;
+
+}
+
+
+#resultCanvas{
+
+    display:none;
+
+}
+
+
+
+
+/* ==========================================
+   CAPTURE BUTTON
+========================================== */
+
+
+#captureBtn{
+    display:none;
+}
+
+
+
+
+#captureBtn:hover{
+
+
+    transform:
+
+        translateX(-50%)
+
+        scale(1.03);
+
+
+}
+
+
+
+
+
+/* ==========================================
+   PROCESSING
+========================================== */
+
+
+#processingOverlay{
+
+
+    position:absolute;
+
+
+    inset:0;
+
+
+    background:rgba(0,0,0,.82);
+
+
+
+    display:flex;
+
+
+    flex-direction:column;
+
+
+
+    justify-content:center;
+
+
+    align-items:center;
+
+
+
+    color:white;
+
+
+
+    z-index:300;
+
+
+}
+
+
+
+
+
+.loader{
+
+
+    width:70px;
+
+    height:70px;
+
+
+
+    border:7px solid rgba(255,255,255,.2);
+
+
+
+    border-top:7px solid white;
+
+
+
+    border-radius:50%;
+
+
+
+    animation:spin .9s linear infinite;
+
+
+
+    margin-bottom:24px;
+
+
+}
+
+
+
+
+
+@keyframes spin{
+
+
+    from{
+
+        transform:rotate(0deg);
+
+    }
+
+
+    to{
+
+        transform:rotate(360deg);
+
+    }
+
+}
+
+
+
+
+
+#processingText{
+
+    font-size:22px;
+
+    font-weight:600;
+
+}
+
+
+
+
+
+/* ==========================================
+   MESSAGE
+========================================== */
+
+
+#messageBox{
+
+
+    position:absolute;
+
+
+    top:50%;
+
+    left:50%;
+
+
+
+    transform:translate(-50%,-50%);
+
+
+
+    width:300px;
+
+
+
+    background:rgba(20,20,20,.95);
+
+
+
+    border-radius:22px;
+
+
+
+    padding:28px;
+
+
+
+    color:white;
+
+
+
+    text-align:center;
+
+
+
+    z-index:400;
+
+
+
+}
+
+
+
+
+
+#messageIcon{
+
+    font-size:50px;
+
+    margin-bottom:12px;
+
+}
+
+
+
+
+#messageText{
+
+    font-size:22px;
+
+}
+
+
+
+
+/* ==========================================
+   PREVIEW
+========================================== */
+
+
+#previewScreen{
+
+
+    position:absolute;
+
+
+    inset:0;
+
+
+
+    background:#111;
+
+
+
+    display:flex;
+
+
+    flex-direction:column;
+
+
+
+    justify-content:center;
+
+
+    align-items:center;
+
+
+
+    z-index:500;
+
+
+}
+
+
+
+
+#previewImage{
+
+    width:55%;
+
+    height:55%;
+
+    object-fit:contain;
+
+    transform:translateY(-50px);
+
+}
+
+
+
+
+#previewButtons{
+
+    width:90%;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:14px;
+
+    margin-left:auto;
+
+    margin-right:auto;
+
+}
+
+
+#previewButtons button{
+
+    flex:1;
+
+    height:60px;
+
+    border-radius:18px;
+
+    border:none;
+
+
+    font-size:18px;
+
+    font-weight:600;
+
+    letter-spacing:1px;
+
+
+    transition:.2s;
+
+    box-shadow:
+    0 8px 20px rgba(0,0,0,.25);
+
+}
+
+
+
+
+
+#retakeBtn{
+
+    background:#222;
+
+    color:white;
+
+}
+
+
+#uploadBtn{
+
+    background:white;
+
+    color:#111;
+
+}
+
+#previewButtons button:active{
+
+    transform:scale(.96);
+
+}
+
+
+
+
+/* ==========================================
+   UTIL
+========================================== */
+
+
+.hidden{
+
+    display:none !important;
+
+}
+
+
+
+
+
+/* ==========================================
+   SMALL PHONE
+========================================== */
+
+
+@media (max-width:480px){
+
+    #faceGuide{
+
+        width:55vw;
+
+    }
+
+
+
+
+
+    #guideText{
+
+
+        font-size:18px;
+
+
+    }
+
+
+
+    #captureBtn{
+
+
+        width:200px;
+
+        height:58px;
+
+
+        font-size:18px;
+
+
+    }
+
+
+}
+
+
+
+
+
+#captureBtn:disabled{
+
+
+    opacity:.35;
+
+
+    cursor:not-allowed;
+
+
+}
+
+#countdown{
+
+    position:absolute;
+
+    margin-top:-80px;
+
+    color:white;
+
+    font-size:60px;
+
+    font-weight:bold;
+
+    text-shadow:0 3px 15px rgba(0,0,0,.7);
+
+}
+
+#messageArea{
+
+    position:absolute;
+
+    top:80%;
+
+    left:50%;
+
+    transform:translateX(-50%);
+
+    width:90%;
+
+    z-index:600;
+
+    pointer-events:auto;
+
+}
+
+
+#messageInput{
+
+    width:100%;
+
+    height:160px;
+
+
+    background:rgba(255,255,255,.95);
+
+
+    border:2px solid rgba(255,255,255,.8);
+
+
+    border-radius:24px;
+
+
+    font-size:18px;
+
+    font-weight:500;
+
+    font-family:
+    "Helvetica Neue",
+    Arial,
+    sans-serif;
+
+    letter-spacing:.5px;
+
+    text-align:center;
+
+
+    padding:25px;
+
+
+    color:#222;
+
+
+    resize:none;
+
+
+    outline:none;
+
+
+    box-shadow:
+    0 10px 30px rgba(0,0,0,.25);
+
+
+    z-index:201;
+
+    pointer-events:auto;
+
+}
+
+#bottomPanel{
+
+    position:absolute;
+
+    left:0;
+    bottom:0;
+
+    width:100%;
+
+    height:306px;
+    transform:translateY(55%);
+
+    background:red;
+
+    z-index:550;
+
+}
