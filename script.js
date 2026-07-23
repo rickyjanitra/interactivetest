@@ -1,3 +1,7 @@
+
+
+let meshLoop = null;
+
 // ======================================================
 // ELEMENT
 // ======================================================
@@ -36,9 +40,49 @@ const retakeBtn =
 document.getElementById("retakeBtn");
 
 
-const continueBtn =
-document.getElementById("continueBtn");
+//const continueBtn =
+//document.getElementById("continueBtn");
 
+
+const uploadBtn =
+document.getElementById("uploadBtn");
+
+const messageInput =
+document.getElementById("messageInput");
+
+
+
+const charCounter =
+document.getElementById("charCounter");
+
+messageInput.oninput = function(){
+
+    charCounter.innerHTML = this.value.length + " / 40";
+
+};
+
+
+
+// =====================================
+// CHARACTER COUNTER
+// =====================================
+
+messageInput.oninput = function(){
+
+    let text = this.value;
+
+    if(text.length > 40){
+
+        text = text.substring(0,40);
+
+        this.value = text;
+
+    }
+
+    charCounter.innerHTML =
+        text.length + " / 40";
+
+};
 
 
 
@@ -107,11 +151,11 @@ async function startCamera(){
 
 
 
-            setInterval(()=>{
+           meshLoop = setInterval(()=>{
 
-                detectMesh();
+    detectMesh();
 
-            },200);
+},200);
 
 
 
@@ -178,11 +222,16 @@ retakeBtn.addEventListener(
 
 
 
-continueBtn.addEventListener(
-    "click",
-    continueProcess
-);
+//continueBtn.addEventListener(
+    //"click",
+    //continueProcess
+//);
 
+
+uploadBtn.addEventListener(
+    "click",
+    uploadPhoto
+);
 
 
 
@@ -265,10 +314,13 @@ async function capturePhoto(){
     // ============================
 
 
-    const guideCanvas =
+ let guideCanvas =
 cropFromGuide();
 
-
+guideCanvas =
+enhanceCanvas(
+    guideCanvas
+);
 
 const transparentImage =
 await removeBackgroundMediaPipe(
@@ -326,16 +378,13 @@ showPreview(
 
 function showPreview(image){
 
+    clearInterval(meshLoop);
 
-    previewImage.src =
-    image;
+    clearInterval(faceLoop);
 
+    previewImage.src = image;
 
-
-    previewScreen.classList.remove(
-        "hidden"
-    );
-
+    previewScreen.classList.remove("hidden");
 
 }
 
@@ -370,6 +419,18 @@ function retakePhoto(){
 
 
     hidePreview();
+
+    meshLoop = setInterval(detectMesh,200);
+
+faceLoop = setInterval(detectFace,300);
+
+    faceGuide.classList.remove("ready");
+
+autoCaptureLock = false;
+
+countdown.innerText = "";
+
+captureButton.disabled = true;
 
 
 }
@@ -636,6 +697,10 @@ cropShiftY;
 
 
 
+    
+
+
+
 
 
     // ==========================
@@ -692,6 +757,57 @@ cropShiftY;
 
 return out;
 
+
+}
+
+
+
+// =====================================
+// AUTO ENHANCE
+// =====================================
+
+function enhanceCanvas(canvas){
+
+    const ctx = canvas.getContext("2d");
+
+    const imageData = ctx.getImageData(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+    const data = imageData.data;
+
+    const brightness = 12;
+    const contrast = 1.08;
+
+    for(let i = 0; i < data.length; i += 4){
+
+        data[i] = Math.min(
+            255,
+            ((data[i]-128) * contrast) + 128 + brightness
+        );
+
+        data[i+1] = Math.min(
+            255,
+            ((data[i+1]-128) * contrast) + 128 + brightness
+        );
+
+        data[i+2] = Math.min(
+            255,
+            ((data[i+2]-128) * contrast) + 128 + brightness
+        );
+
+    }
+
+    ctx.putImageData(
+        imageData,
+        0,
+        0
+    );
+
+    return canvas;
 
 }
 
@@ -892,6 +1008,67 @@ async function removeBackgroundMediaPipe(canvas){
 
 
     });
+
+}
+
+
+// ======================================================
+// UPLOAD PHOTO
+// ======================================================
+
+async function uploadPhoto(){
+
+    console.log("UPLOAD CLICKED");
+
+    if(!capturedImage){
+
+        showMessage("No photo");
+
+        return;
+
+    }
+
+    // DataURL -> Blob
+    const response = await fetch(capturedImage);
+
+    const blob = await response.blob();
+
+    // FormData
+    const formData = new FormData();
+
+    formData.append(
+        "photo",
+        blob,
+        "selfie.png"
+    );
+
+    formData.append(
+        "message",
+        messageInput.value
+    );
+
+    // Upload ke PHP
+    const upload = await fetch(
+        "upload.php",
+        {
+            method:"POST",
+            body:formData
+        }
+    );
+
+    const result = await upload.json();
+
+    console.log(result);
+
+    if(result.success){
+
+        showMessage("Upload Success");
+
+    }else{
+
+        showMessage(result.message);
+
+    }
 
 }
 

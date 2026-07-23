@@ -153,8 +153,8 @@ function checkHeadInsideGuide(){
 
 
     const sizeOK =
-    headRatio > 0.65 &&
-    headRatio < 1.05;
+    headRatio > 0.45 &&
+    headRatio < 0.80;
 
 
 

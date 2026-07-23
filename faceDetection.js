@@ -1,3 +1,7 @@
+
+let faceLoop = null;
+
+
 // ========================================
 // ELEMENT
 // ========================================
@@ -204,7 +208,7 @@ guideText.innerText =
         autoCaptureLock = true;
 
 
-        let count = 3;
+        let count = 8;
 
 
         countdown.innerText = count;
@@ -369,13 +373,11 @@ function startFaceDetection(){
     setTimeout(()=>{
 
 
-        setInterval(()=>{
+    faceLoop = setInterval(()=>{
 
+    detectFace();
 
-            detectFace();
-
-
-        },300);
+},300);
 
 
 
